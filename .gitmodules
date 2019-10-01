@@ -1,0 +1,3 @@
+[submodule "energy_union_frontend"]
+	path = energy_union_frontend
+	url = git@github.com:eaudeweb/energy_union_frontend.git
