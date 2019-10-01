@@ -8,7 +8,7 @@ bootstrap: init setup-data setup-plone
 init:
 	git submodule init
 	git submodule update
-	sh -c "cd frontend && git submodule init && git submodule update"
+	sh -c "cd energy_union_frontend && git submodule init && git submodule update"
 
 .PHONY: build-plone
 build-plone:		## Build the Plone docker image
@@ -74,7 +74,7 @@ start-volto-production:		## Start the volto service in production mode
 
 .PHONY: release-frontend
 release-frontend:		## Make a Docker Hub release for frontend
-	sh -c "cd frontend && docker build -t tiberiuichim/fise-frontend:$(VERSION) -f Dockerfile . && docker push tiberiuichim/fise-frontend:$(VERSION)"
+	sh -c "cd energy_union_frontend && docker build -t tiberiuichim/fise-frontend:$(VERSION) -f Dockerfile . && docker push tiberiuichim/fise-frontend:$(VERSION)"
 
 .PHONY: release-plone
 release-plone:		## Make a Docker Hub release for the Plone backend
@@ -87,7 +87,7 @@ help:		## Show this help.
 .PHONY: eslint
 eslint:		## Run eslint --fix on all *.js, *.json, *.jsx files in src
 	set -e; \
-		cd frontend;\
+		cd energy_union_frontend;\
 		echo "Linting JS files";\
 		eslint --fix src/**/*.js;\
 		echo "Linting JSX files";\
