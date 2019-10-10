@@ -1,0 +1,6 @@
+services:
+  frontend:
+    build: ./energy_union_frontend
+
+  plone:
+    build: ./docker
