@@ -5,7 +5,7 @@ services:
   plone:
     # build: ./docker/
     # image: kitconcept/plone.restapi:latest
-    image: tiberiuichim/fise-plone:0.1
+    image: tiberiuichim/energyunion-plone:0.1
     labels:
       io.rancher.scheduler.affinity:host_label_ne: reserved=yes
     depends_on:
@@ -69,7 +69,7 @@ services:
 
   frontend:
     # build: ./frontend
-    image: tiberiuichim/fise-frontend:1.3
+    image: tiberiuichim/energy_union_frontend:1.0
     environment:
       RAZZLE_API_PATH: "http://localhost:8085/eunion"
       RAZLLE_INTERNAL_API_PATH: "http://plone:8080/eunion"
