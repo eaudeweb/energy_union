@@ -3,7 +3,7 @@ version: "2"
 services:
 
   plone:
-    image: tiberiuichim/energy-union-plone:2.3
+    image: tiberiuichim/energy-union-plone:2.4
     labels:
       io.rancher.scheduler.affinity:host_label_ne: reserved=yes
     depends_on:
@@ -66,7 +66,7 @@ services:
       # - ./data/blobstorage:/data/blobstorage
 
   frontend:
-    image: tiberiuichim/energy_union_frontend:1.0
+    image: tiberiuichim/energy-union-frontend:1.3
     environment:
       RAZZLE_API_PATH: "http://localhost:8085/eunion"
       RAZLLE_INTERNAL_API_PATH: "http://plone:8080/eunion"
