@@ -74,11 +74,11 @@ start-volto-production:		## Start the volto service in production mode
 
 .PHONY: release-frontend
 release-frontend:		## Make a Docker Hub release for frontend
-	sh -c "cd energy_union_frontend && docker build -t tiberiuichim/fise-frontend:$(VERSION) -f Dockerfile . && docker push tiberiuichim/fise-frontend:$(VERSION)"
+	sh -c "cd energy_union_frontend && docker build -t tiberiuichim/energy-union-frontend:$(VERSION) -f Dockerfile . && docker push tiberiuichim/energy-union-frontend:$(VERSION)"
 
 .PHONY: release-plone
 release-plone:		## Make a Docker Hub release for the Plone backend
-	sh -c "cd docker && docker build -t tiberiuichim/fise-plone:$(VERSION) -f Dockerfile . && docker push tiberiuichim/fise-plone:$(VERSION)"
+	sh -c "cd docker && docker build -t tiberiuichim/energy-union-plone:$(VERSION) -f Dockerfile . && docker push tiberiuichim/energy-union-plone:$(VERSION)"
 
 .PHONY: help
 help:		## Show this help.
