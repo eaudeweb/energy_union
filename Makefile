@@ -1,7 +1,10 @@
 .DEFAULT_GOAL := help
+
 SHELL=/bin/bash
 
 image-name-split = $(firstword $(subst :, ,$1))
+
+SKELETON := "https://github.com/tiberiuichim/fullstack-skeleton.git"
 
 # identify project folders
 BACKEND := backend
@@ -27,20 +30,7 @@ init:
 		git submodule update; \
 		cd ${FRONTEND}; \
 		git submodule init; \
-		git submodule update"
-
-.PHONY: build-plone
-build-plone:		## Build the Plone docker image
-	docker-compose stop plone
-	docker-compose rm -f plone
-	docker-compose build plone
-	docker-compose up -d plone
-
-.PHONY: plone-shell
-plone-shell:		## Run a shell on the Plone docker image
-	docker-compose stop plone
-	docker-compose up -d ploneshell
-	docker-compose exec ploneshell bash
+		git submodule update
 
 .PHONY: setup-data
 setup-data:		## Setup the datastorage for Zeo
@@ -53,7 +43,7 @@ setup-data:		## Setup the datastorage for Zeo
 setup-plone:		## Setup products folder and Plone user
 	docker-compose up -d
 	docker-compose exec plone bin/develop rb
-	docker-compose exec plone /docker-initialise.py
+	docker-compose exec plone /docker-initialize.py
 	docker-compose exec plone bin/instance adduser admin admin
 	sudo chown -R `whoami` src/
 
@@ -62,7 +52,7 @@ start-plone:		## Start the plone process
 	docker-compose stop plone
 	docker-compose up -d zeo
 	docker-compose up -d plone
-	docker-compose exec plone /docker-initialise.py
+	docker-compose exec plone /docker-initialize.py
 	docker-compose exec plone bin/instance fg
 
 .PHONY: start-frontend
@@ -106,8 +96,22 @@ eslint:		## Run eslint --fix on all *.js, *.json, *.jsx files in src
 
 .PHONY: clean-releases
 clean-releases:		## Cleanup space by removing old docker images
-	sh -c "docker images | grep fise-plone | tr -s ' ' | cut -d ' ' -f 2 | xargs -I {} docker rmi ${BACKEND_IMAGE_NAME}:{}"
-	sh -c "docker images | grep fise-plone | tr -s ' ' | cut -d ' ' -f 2 | xargs -I {} docker rmi ${FRONTEND_IMAGE_NAME}:{}"
+	sh -c "docker images | grep ${BACKEND_IMAGE_NAME} | tr -s ' ' | cut -d ' ' -f 2 | xargs -I {} docker rmi ${BACKEND_IMAGE_NAME}:{}"
+	sh -c "docker images | grep ${FRONTEND_IMAGE_NAME} | tr -s ' ' | cut -d ' ' -f 2 | xargs -I {} docker rmi ${FRONTEND_IMAGE_NAME}:{}"
+
+.PHONY: sync-makefiles
+sync-makefiles:		## Updates makefiles to latest github versions
+	git clone ${SKELETON} .skel
+	cp .skel/Makefile ./
+	cp .skel/frontend/Makefile ./frontend/
+	cp .skel/backend/Makefile ./backend/Makefile
+	rm -rf ./.skel
+
+.PHONY: sync-dockercompose
+sync-dockercompose:		## Updates docker-compose.yml to latest github versions
+	git clone ${SKELETON} .skel
+	cp .skel/docker-compose.yml ./
+	rm -rf ./.skel
 
 .PHONY: help
 help:		## Show this help.
