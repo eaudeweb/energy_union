@@ -3,47 +3,31 @@ version: "2.1"
 services:
 
   plone:
-    image: "$BACKEND_IMAGE:?no such variable"
+    image: "${BACKEND_IMAGE:?no such variable}"
     labels:
       io.rancher.scheduler.affinity:host_label_ne: reserved=yes
     depends_on:
       - zeo
       - memcached
     ports:
-      - "8085:8080"
+      - "${BACKEND_PORT:-8085}:8080"
     environment:
       TZ: "Europe/Copenhagen"
       ZEO_ADDRESS: "zeo:8080"
       ZOPE_MODE: "zeo_client"
+    entrypoint: sh -c "tail -f /dev/null"
 
   frontend:
-    image: "$FRONTEND_IMAGE:?no such variable"
+    image: "${FRONTEND_IMAGE:?no such variable}"
     environment:
-      RAZZLE_API_PATH: "http://localhost:8085/Plone"
-      RAZZLE_INTERNAL_API_PATH: "http://plone:8080/Plone"
-      PORT: "3000"
+      RAZZLE_API_PATH: "http://localhost:${BACKEND_PORT}/${SITE_NAME:-Plone}"
+      RAZZLE_INTERNAL_API_PATH: "http://plone:8080/${SITE_NAME:-Plone}"
+      PORT: "${FRONTEND_PORT:-3000}"
     ports:
-      - "3000:3000"
-      - "3001:3001"
-      - "8888:8888"
+      - "${FRONTEND_PORT:-3000}:${FRONTEND_PORT:-3000}"
+      - "${FRONTEND_PORT_NEXT:-3001}:${FRONTEND_PORT_NEXT:-3001}"
+      - "${FRONTEND_ANALYZE_PORT:-8888}:${FRONTEND_ANALYZE_PORT:-8888}"
     entrypoint: sh -c "tail -f /dev/null"
-    volumes:
-      - ./frontend:/opt/frontend/
-      # - ./frontend/entrypoint-dev.sh:/opt/fise/entrypoint.sh
-
-  frontend-production:
-    image: ${FRONTEND_IMAGE:?no such variable}
-    environment:
-      API_PATH: "http://localhost:8085/Plone"
-      INTERNAL_API_PATH: "http://plone:8080/Plone"
-      PORT: "3000"
-    ports:
-      - "3000:3000"
-      - "3001:3001"
-      - "8888:8888"
-    entrypoint: sh -c "tail -f /dev/null"
-    volumes:
-      - ./frontend:/opt/frontend/
 
   zeo:
     image: plone:5.2-python2
