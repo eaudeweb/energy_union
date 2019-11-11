@@ -3,12 +3,12 @@ image-name-split = $(firstword $(subst :, ,$1))
 SHELL=/bin/bash
 DOCKERIMAGE_FILE="docker-image.txt"
 NAME := $(call image-name-split,$(shell cat $(DOCKERIMAGE_FILE)), 1)
-IMAGE := $(shell cat $(DOCKERIMAGE_FILE))
+IMAGE=$(shell cat $(DOCKERIMAGE_FILE))
 
 .DEFAULT_GOAL := help
 
-.PHONY: all
-all: bump build-image push		## (Host side) release a new version of frontend docker image
+.PHONY: release
+release: bump build-image push		## (Host side) release a new version of frontend docker image
 
 .PHONY: bump
 bump:
