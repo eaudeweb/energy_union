@@ -192,8 +192,8 @@ sync-makefiles:.skel		## Updates makefiles to latest github versions
 	else \
 		echo "No frontend folder"; \
 	fi; \
-	@rm -rf ./.skel
-	@echo "Sync completed"
+	rm -rf ./.skel; \
+	echo "Sync completed"
 
 .PHONY: sync-dockercompose
 sync-dockercompose:.skel		## Updates docker-compose.yml to latest github versions
