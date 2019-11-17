@@ -24,13 +24,13 @@ else
 endif
 
 docker-compose.override.yml:
-	@if [ ! -f 'docker-compose.override.yml' ]; then
+	@if [[ ! -f 'docker-compose.override.yml' ]]; then
 		$(error "You need to run a setup recipe first")
 	fi
 
 .PHONY: init-submodules
 init-submodules:
-	git submodule update --init -- recursive
+	git submodule update --init --recursive
 
 plone-data:
 	sudo mkdir -p plone-data/filestorage
@@ -73,15 +73,20 @@ setup-backend-dev:plone_override plone_install 		## Setup needed for developing 
 
 .PHONY: frontend_override
 frontend_override:.skel
-	@if [ -z $(HAS_FRONTEND_OVERRIDE) ]; then \
+	@if [[ -z $(HAS_FRONTEND_OVERRIDE) ]]; then \
 		echo "Overwriting the docker-compose.override.yml file!"; \
 		cp .skel/tpl/docker-compose.override.frontend.yml docker-compose.override.yml; \
 	fi;
 
 .PHONY: frontend_install
 frontend_install:
+	echo ""
+	echo "Running frontend_install target"
+	echo ""
 	docker-compose up -d frontend
 	docker-compose exec frontend npm install
+	echo "Make sure that your frontend has mr.developer support"
+	docker-compose exec frontend npm run develop
 
 .PHONY: setup-frontend-dev
 setup-frontend-dev:frontend_override frontend_install		## Setup needed for developing the frontend
@@ -89,8 +94,8 @@ setup-frontend-dev:frontend_override frontend_install		## Setup needed for devel
 
 .PHONY: fullstack_override
 fullstack_override:.skel
-	@if [ -z "$(HAS_PLONE_OVERRIDE)" ]; then \
-		if [ -z "$(HAS_FRONTEND_OVERRIDE)" ]; then \
+	@if [[ -z $(HAS_PLONE_OVERRIDE) ]]; then \
+		if [[ -z $(HAS_FRONTEND_OVERRIDE) ]]; then \
 			echo "Overwriting the docker-compose.override.yml file!"; \
 			cp .skel/tpl/docker-compose.override.fullstack.yml docker-compose.override.yml; \
 		fi; \
@@ -182,10 +187,11 @@ sync-makefiles:.skel		## Updates makefiles to latest github versions
 	@cp .skel/Makefile ./
 	@cp .skel/backend/Makefile ./backend/Makefile
 	@cp -i .skel/scripts/* ./scripts/
-	@if [ -d "${FRONTEND}" ]; then \
-		cp .skel/_frontend/Makefile ./frontend/; \
+	@if [[ -d ${FRONTEND} ]]; then \
+		cp -i .skel/_frontend/Makefile ./frontend/; \
+		cp -i .skel/_frontend/pkg_helper.py ./frontend/; \
 	else \
-		echo "No frontend folder"; \
+		echo "No frontend folder, skipping"; \
 	fi; \
 	rm -rf ./.skel; \
 	echo "Sync completed"
