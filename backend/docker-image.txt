@@ -1,1 +1,1 @@
-tiberiuichim/energy-union-plone:5.2-0.19
+tiberiuichim/energy-union-plone:5.2-0.20
