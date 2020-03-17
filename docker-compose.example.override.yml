@@ -1,8 +1,19 @@
-version: "2"
+version: "2.1"
 
 services:
-  frontend:
-    build: ./energy_union_frontend
+
+  zeo:
+    volumes:
+      - ./plone-data:/data
 
   plone:
-    build: ./docker
+    volumes:
+      - ./src:/plone/instance/src
+      - ./backend/site.cfg:/plone/instance/site.cfg
+    environment:
+      CORS_ALLOW_ORIGIN: "http://localhost:3000,http://localhost:3085"
+
+  frontend:
+    volumes:
+      - ./frontend:/opt/frontend
+      - ./.git:/opt/.git
